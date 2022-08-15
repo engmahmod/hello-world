@@ -24,7 +24,7 @@ jobs:
         - checkout
         - run:
             name: "Say Myname"
-            command: echo MYNAME_VAR
+            command: echo $MYNAME_VAR
 workflows:
   hello_workflow:
     jobs:
