@@ -1,25 +1,41 @@
 
 version: 2.1
 
+commands:
+  print_pipeline_id:
+    description: "A very simple command for demonstration purposes"
+    parameters:
+      to:
+        type: string
+        default: $CIRCLE_WORKFLOW_ID
+    steps:
+      - run: echo << parameters.to >>
+
 jobs:
-  save_hello_world_output:
+  pipline_id:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run: echo "hello world" > ~/output.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - output.txt
+      - print_pipeline_id
+
   print_output_file:
     docker:
       - image: circleci/node:13.8.0
 
     steps:
       - attach_workspace:
-          at: ~/
-      - run: cat ~/output.txt
+          at: /tmp/workspace
+      - run: cat /tmp/workspace
 
+  save_hello_world_output:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - run: echo "hello world" > ~/output.txt
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - output.txt
 workflows:
   say-hello-workflow:
     jobs:
@@ -27,3 +43,4 @@ workflows:
       - print_output_file:
           requires:
             - save_hello_world_output
+      - pipline_id
