@@ -32,6 +32,11 @@ jobs:
           root: /tmp/workspace
           paths:
             - output.txt
+      - run: exit 1
+      - run:
+          name: on error
+          command: echo "Hello Error!"
+          when: on_fail
 workflows:
   say-hello-workflow:
     jobs:
