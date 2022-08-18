@@ -8,11 +8,6 @@ commands:
       - run: echo ${CIRCLE_WORKFLOW_ID}
 
 jobs:
-  pipline_id:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - print_pipeline_id
 
   print_output_file:
     docker:
@@ -21,7 +16,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - run: cat /tmp/workspace
+      - run: cat /tmp/workspace/output.txt
 
   save_hello_world_output:
     docker:
@@ -37,6 +32,13 @@ jobs:
           name: on error
           command: echo "Hello Error!"
           when: on_fail
+
+  pipline_id:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - print_pipeline_id
+
 workflows:
   say-hello-workflow:
     jobs:
