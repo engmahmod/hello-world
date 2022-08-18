@@ -9,15 +9,6 @@ commands:
 
 jobs:
 
-  print_output_file:
-    docker:
-      - image: circleci/node:13.8.0
-
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run: cat /tmp/workspace/output.txt
-
   save_hello_world_output:
     docker:
       - image: circleci/node:13.8.0
@@ -27,23 +18,32 @@ jobs:
           root: /tmp/workspace
           paths:
             - output.txt
-      - run: exit 1
-      - run:
-          name: on error
-          command: echo "Hello Error!"
-          when: on_fail
+
+  print_output_file:      
+    docker:
+      - image: circleci/node:13.8.0
+
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: cat /tmp/workspace/output.txt
 
   pipline_id:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - print_pipeline_id
+      - run: exit 1
+      - run:
+          name: on error
+          command: echo "Hello Error!"
+          when: on_fail
 
 workflows:
-  say-hello-workflow:
-    jobs:
-      - save_hello_world_output
-      - print_output_file:
-          requires:
-            - save_hello_world_output
-      - pipline_id
+    say-hello-workflow:
+      jobs:
+        - save_hello_world_output
+        - print_output_file:
+            requires:
+              - save_hello_world_output
+        - pipline_id
